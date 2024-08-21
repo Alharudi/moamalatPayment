@@ -22,7 +22,8 @@ class MoamalatPayment extends StatefulWidget {
   final String amount;
 
   /// The secret key of the merchant.
-  final String merchantSecretKey;
+  // final String merchantSecretKey;
+  final String secureHashKey ;
 
   /// A callback function that is called when the payment is completed successfully.
   final void Function(TransactionSucsses transactionSucsses) onCompleteSucsses;
@@ -37,7 +38,8 @@ class MoamalatPayment extends StatefulWidget {
     required this.merchantReference,
     required this.terminalId,
     required this.amount,
-    required this.merchantSecretKey,
+    // required this.merchantSecretKey,
+    required this.secureHashKey,
     required this.onCompleteSucsses,
     required this.onError,
     this.isTest = false,
@@ -92,14 +94,14 @@ class _MoamalatPaymentState extends State<MoamalatPayment> {
   }
 
   /// Calculates the hash of the payment data using the merchant's secret key.
-  String hash() {
-    var key = hex2a(widget.merchantSecretKey);
+  // String hash() {
+  //   var key = hex2a(widget.merchantSecretKey);
 
-    var msg = encodeData();
-    var hmac = Hmac(sha256, utf8.encode(key));
-    var hash = hmac.convert(utf8.encode(msg)).toString().toUpperCase();
-    return '"$hash"';
-  }
+  //   var msg = encodeData();
+  //   var hmac = Hmac(sha256, utf8.encode(key));
+  //   var hash = hmac.convert(utf8.encode(msg)).toString().toUpperCase();
+  //   return '"$hash"';
+  // }
 
   /// Converts a hexadecimal string to an ASCII string.
 
@@ -153,7 +155,7 @@ class _MoamalatPaymentState extends State<MoamalatPayment> {
         AmountTrxn: ${widget.amount},
         MerchantReference: '${widget.merchantReference}',
         TrxDateTime: $dateTime,
-        SecureHash: ${hash()},
+        SecureHash: ${widget.secureHashKey},
         completeCallback: function (data) {
           window.flutter_inappwebview.callHandler('sucsses', JSON.stringify(data));
           window.complete.postMessage('Payment completed successfully');

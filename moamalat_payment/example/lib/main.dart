@@ -49,11 +49,12 @@ class _MyHomePageState extends State<MyHomePage> {
             "1000", // get your amount from previos screen  Note: required  Integer number without any comma *1000
         //ex 1: if you need to recharge 10 dinnar  the amount will be 10 *1000
         //ex 2: if you need to recharge 10.5 dinnar the ammount will be 10500
-        merchantSecretKey:
-            "39636630633731362D663963322D346362642D386531662D633963303432353936373431", //put your merchantSecretKey
+        // merchantSecretKey:
+        //     "39636630633731362D663963322D346362642D386531662D633963303432353936373431", //put your merchantSecretKey
         // * make sure all value's are String *
         onCompleteSucsses: (value) {},
         onError: (error) {},
+         secureHashKey: 'qwerasdqwer123123qwerewq',
       ),
     );
   }
