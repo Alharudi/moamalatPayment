@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:moamalat_payment/src/error_model.dart';
@@ -30,6 +29,7 @@ class MoamalatPayment extends StatefulWidget {
 
   /// A callback function that is called when an error occurs during the payment process.
   final void Function(PaymentError paymentError) onError;
+  final String dateTime;
 
   /// Creates a new MoamalatPayment widget.
   const MoamalatPayment({
@@ -43,6 +43,7 @@ class MoamalatPayment extends StatefulWidget {
     required this.onCompleteSucsses,
     required this.onError,
     this.isTest = false,
+    required this.dateTime,
   });
 
   /// The state for the MoamalatPayment widget.
@@ -54,7 +55,7 @@ class MoamalatPayment extends StatefulWidget {
 class _MoamalatPaymentState extends State<MoamalatPayment> {
   InAppWebViewController? controller;
   late String moamalatScriptWebPage;
-  late String dateTime;
+  
   late final String _url;
 
   InAppWebViewSettings options = InAppWebViewSettings(
@@ -66,7 +67,7 @@ class _MoamalatPaymentState extends State<MoamalatPayment> {
   void initState() {
     super.initState();
     checkTest();
-    dateTime = getDateTimeLocalTrxnStr();
+    // dateTime = getDateTimeLocalTrxnStr();
   }
 
   /// Determines the URL of the Moamalat payment script based on the `isTest` property.
@@ -79,18 +80,18 @@ class _MoamalatPaymentState extends State<MoamalatPayment> {
   }
 
   /// Returns the current date and time in the format required by Moamalat.
-  String getDateTimeLocalTrxnStr() {
-    DateTime dateTimeLocalTrxn = DateTime.now();
-    int dateTimeLocalTrxnSeconds =
-        dateTimeLocalTrxn.millisecondsSinceEpoch ~/ 1000;
-    String dateTimeLocalTrxnStr = dateTimeLocalTrxnSeconds.toString();
-    return dateTimeLocalTrxnStr;
-  }
+  // String getDateTimeLocalTrxnStr() {
+  //   DateTime dateTimeLocalTrxn = DateTime.now();
+  //   int dateTimeLocalTrxnSeconds =
+  //       dateTimeLocalTrxn.millisecondsSinceEpoch ~/ 1000;
+  //   String dateTimeLocalTrxnStr = dateTimeLocalTrxnSeconds.toString();
+  //   return dateTimeLocalTrxnStr;
+  // }
 
   /// Encodes the payment data as a string for use in the hash calculation.
 
   String encodeData() {
-    return 'Amount=${widget.amount}&DateTimeLocalTrxn=$dateTime&MerchantId=${widget.merchantId}&MerchantReference=${widget.merchantReference}&TerminalId=${widget.terminalId}';
+    return 'Amount=${widget.amount}&DateTimeLocalTrxn=${widget.dateTime}&MerchantId=${widget.merchantId}&MerchantReference=${widget.merchantReference}&TerminalId=${widget.terminalId}';
   }
 
   /// Calculates the hash of the payment data using the merchant's secret key.
@@ -154,7 +155,7 @@ class _MoamalatPaymentState extends State<MoamalatPayment> {
         TID: ${widget.terminalId},
         AmountTrxn: ${widget.amount},
         MerchantReference: '${widget.merchantReference}',
-        TrxDateTime: $dateTime,
+        TrxDateTime: ${widget.dateTime},
         SecureHash: ${widget.secureHashKey},
         completeCallback: function (data) {
           window.flutter_inappwebview.callHandler('sucsses', JSON.stringify(data));
